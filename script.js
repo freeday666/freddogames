@@ -1,164 +1,165 @@
-// Canvas particle background animation
-function initBackground() {
-    const canvas = document.getElementById('bg-canvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
 
-    window.addEventListener('resize', () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    });
+const scoreSpan = document.getElementById('score');
+const startBtn = document.getElementById('startBtn');
+const adminBtn = document.getElementById('adminBtn');
 
-    const particles = [];
-    const particleCount = 100;
+const loginModal = document.getElementById('login-modal');
+const adminModal = document.getElementById('admin-modal');
+const closeLogin = document.getElementById('close-login');
+const closeAdmin = document.getElementById('close-admin');
 
-    class Particle {
-        constructor() {
-            this.x = Math.random() * canvas.width;
-            this.y = Math.random() * canvas.height;
-            this.size = Math.random() * 3 + 1;
-            this.speedX = Math.random() * 1 - 0.5;
-            this.speedY = Math.random() * 1 - 0.5;
-            this.color = `hsl(${Math.random() * 360}, 70%, 60%)`;
-        }
-        update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
-            if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
-            if (this.y > canvas.height || this.y < 0) this.speedY *= -1;
-        }
-        draw() {
-            ctx.fillStyle = this.color;
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fill();
-        }
-    }
+const loginForm = document.getElementById('login-form');
+const logoutBtn = document.getElementById('logoutBtn');
+const adminScoreSpan = document.getElementById('adminScore');
+const saveSettingsBtn = document.getElementById('saveSettings');
+const springPowerRange = document.getElementById('springPower');
 
-    for (let i = 0; i < particleCount; i++) {
-        particles.push(new Particle());
-    }
+let gameInterval;
+let score = 0;
+let gameRunning = false;
+let isAdmin = false;
 
-    function animate() {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        particles.forEach(p => {
-            p.update();
-            p.draw();
-        });
-        requestAnimationFrame(animate);
-    }
-    animate();
+// Spel objecten
+const player = {
+  x: 100,
+  y: 0,
+  width: 40,
+  height: 60,
+  velocityY: 0,
+  onTrampoline: false
+};
+
+const trampoline = {
+  x: 50,
+  y: 300,
+  width: 300,
+  height: 20
+};
+
+let springPower = parseInt(springPowerRange.value);
+
+// Canvas grootte
+function resizeCanvas() {
+  canvas.width = 400;
+  canvas.height = 400;
 }
+resizeCanvas();
 
-// Games data (localStorage backend)
-function loadGames() {
-    const games = localStorage.getItem('freddoGames');
-    return games ? JSON.parse(games) : [
-        { id: 1, title: 'Cyber Rush', desc: 'Fast-paced cyberpunk racer' },
-        { id: 2, title: 'Neon Battle', desc: 'Multiplayer arena shooter' },
-        { id: 3, title: 'Quantum Puzzle', desc: 'Mind-bending puzzles' }
-    ];
-}
-
-function saveGames(games) {
-    localStorage.setItem('freddoGames', JSON.stringify(games));
-}
-
-function renderGames(games) {
-    const grid = document.getElementById('games-grid');
-    grid.innerHTML = games.map(game => `
-        <div class="game-card">
-            <h3>${game.title}</h3>
-            <p>${game.desc}</p>
-        </div>
-    `).join('');
-}
-
-// Login logic
-const ADMIN_CREDENTIALS = { username: 'admin', password: 'eigenaar44' };
-
-document.addEventListener('DOMContentLoaded', () => {
-    initBackground();
-
-    const games = loadGames();
-    renderGames(games);
-
-    // Admin button
-    document.getElementById('admin-btn').addEventListener('click', () => {
-        document.getElementById('login-modal').style.display = 'block';
-    });
-
-    // Login form
-    document.getElementById('login-form').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-
-        if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
-            document.getElementById('login-modal').style.display = 'none';
-            document.getElementById('admin-modal').style.display = 'block';
-            renderAdminGames(loadGames());
-            document.getElementById('admin-message').textContent = 'Login successful! Manage your games.';
-            document.getElementById('admin-message').className = 'success';
-        } else {
-            document.getElementById('admin-message').textContent = 'Invalid credentials!';
-            document.getElementById('admin-message').className = 'error';
-        }
-    });
-
-    // Add game form
-    document.getElementById('add-game-form').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const title = document.getElementById('game-title').value;
-        const desc = document.getElementById('game-desc').value;
-        const games = loadGames();
-        const newGame = {
-            id: Date.now(),
-            title,
-            desc
-        };
-        games.unshift(newGame);
-        saveGames(games);
-        renderGames(games);
-        renderAdminGames(games);
-        document.getElementById('add-game-form').reset();
-        document.getElementById('admin-message').textContent = 'Game added successfully!';
-        document.getElementById('admin-message').className = 'success';
-    });
-
-    // Close modals
-    document.querySelectorAll('.close').forEach(close => {
-        close.addEventListener('click', () => {
-            close.closest('.modal').style.display = 'none';
-        });
-    });
-
-    window.addEventListener('click', (e) => {
-        if (e.target.classList.contains('modal')) {
-            e.target.style.display = 'none';
-        }
-    });
+document.addEventListener('keydown', (e) => {
+  if (e.key === ' ' && player.onTrampoline) {
+    // Spring
+    player.velocityY = -springPower;
+    player.onTrampoline = false;
+  }
 });
 
-function renderAdminGames(games) {
-    const list = document.getElementById('admin-games-list');
-    list.innerHTML = games.map(game => `
-        <li class="admin-game-item">
-            <span><strong>${game.title}</strong>: ${game.desc}</span>
-            <button class="delete-btn" onclick="deleteGame(${game.id})">Delete</button>
-        </li>
-    `).join('');
+// Admin knop
+adminBtn.onclick = () => {
+  loginModal.style.display = 'block';
+};
+
+// Sluit login modal
+closeLogin.onclick = () => {
+  loginModal.style.display = 'none';
+};
+
+// Sluit admin modal
+closeAdmin.onclick = () => {
+  adminModal.style.display = 'none';
+};
+
+// Uitloggen
+logoutBtn.onclick = () => {
+  isAdmin = false;
+  alert('Uitgelogd');
+  adminModal.style.display = 'none';
+  updateAdminView();
+};
+
+// Login form
+loginForm.onsubmit = (e) => {
+  e.preventDefault();
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+  if (password === 'https100') {
+    isAdmin = true;
+    alert('Ingelogd als admin!');
+    loginModal.style.display = 'none';
+    updateAdminView();
+  } else {
+    alert('Onjuiste wachtwoord!');
+  }
+};
+
+// Update admin dashboard view
+function updateAdminView() {
+  if (isAdmin) {
+    adminModal.style.display = 'block';
+    document.getElementById('admin-message').textContent = '';
+    document.getElementById('adminScore').textContent = score;
+  }
 }
 
-function deleteGame(id) {
-    let games = loadGames();
-    games = games.filter(g => g.id !== id);
-    saveGames(games);
-    renderGames(games);
-    renderAdminGames(games);
-    document.getElementById('admin-message').textContent = 'Game deleted!';
-    document.getElementById('admin-message').className = 'success';
+// Spel starten
+startBtn.onclick = () => {
+  if (gameRunning) return;
+  resetGame();
+  gameInterval = setInterval(update, 20);
+  gameRunning = true;
+};
+
+// Reset game
+function resetGame() {
+  score = 0;
+  scoreSpan.textContent = score;
+  player.x = 100;
+  player.y = 0;
+  player.velocityY = 0;
+  player.onTrampoline = false;
+  updateAdminView();
 }
 
+// Update game
+function update() {
+  player.velocityY += 0.5; // zwaartekracht
+  player.y += player.velocityY;
+
+  // Als speler op trampoline landt
+  if (player.y + player.height >= trampoline.y) {
+    player.y = trampoline.y - player.height;
+    player.velocityY = 0;
+    if (!player.onTrampoline) {
+      player.onTrampoline = true;
+      score++;
+      scoreSpan.textContent = score;
+      if (isAdmin) {
+        document.getElementById('adminScore').textContent = score;
+      }
+    }
+  }
+
+  // Vallen
+  if (player.y > canvas.height) {
+    alert('Je bent gevallen! Game Over.');
+    clearInterval(gameInterval);
+    gameRunning = false;
+  }
+
+  draw();
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = 'brown';
+  ctx.fillRect(trampoline.x, trampoline.y, trampoline.width, trampoline.height);
+  ctx.fillStyle = 'blue';
+  ctx.fillRect(player.x, player.y, player.width, player.height);
+}
+
+// Instellingen opslaan
+document.getElementById('saveSettings').onclick = () => {
+  springPower = parseInt(springPowerRange.value);
+  alert('Instellingen opgeslagen!');
+};
