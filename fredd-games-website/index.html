@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Freddo Games - Coolest Gaming Hub</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-canvas">
+        <canvas id="bg-canvas"></canvas>
+    </div>
+
+    <header>
+        <h1 class="logo">F<span class="cool">r</span>e<span class="cool">d</span>d<span class="cool">o</span> Games</h1>
+        <nav>
+            <button id="admin-btn" class="admin-btn">Admin</button>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h2>Welcome to the Future of Gaming</h2>
+            <p>Discover cooler games, epic adventures, and non-stop action.</p>
+            <div class="games-grid" id="games-grid">
+                <!-- Games will be populated by JS -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Admin Login</h3>
+            <form id="login-form">
+                <input type="text" id="username" placeholder="Username" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard Modal -->
+    <div id="admin-modal" class="modal">
+        <div class="modal-content large">
+            <span class="close">&times;</span>
+            <h3>Admin Dashboard - Manage Games</h3>
+            <div id="admin-message"></div>
+            <form id="add-game-form">
+                <input type="text" id="game-title" placeholder="Game Title" required>
+                <input type="text" id="game-desc" placeholder="Description" required>
+                <button type="submit">Add Game</button>
+            </form>
+            <ul id="admin-games-list"></ul>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
