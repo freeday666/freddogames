@@ -3,382 +3,89 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Freddo Games</title>
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet"/>
+<title>Gebruiker Inloggen & Registratie</title>
 <style>
-    body {
-        margin: 0;
-        font-family: 'Montserrat', sans-serif;
-        background: #121212;
-        color: #fff;
-        overflow-x: hidden;
-    }
-
-    header {
-        background: linear-gradient(90deg, #0f2027, #203a43, #2c5364);
-        padding: 20px;
-        text-align: center;
-        font-size: 2em;
-        font-weight: 700;
-        letter-spacing: 2px;
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-        animation: fadeIn 1s ease-in-out;
-    }
-
-    nav {
-        display: flex;
-        justify-content: center;
-        background-color: #222;
-        padding: 10px 0;
-        gap: 15px;
-        position: sticky;
-        top: 70px;
-        z-index: 999;
-        animation: fadeIn 1s ease-in-out;
-    }
-
-    nav a {
-        color: #00ff99;
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 1.1em;
-        padding: 8px 12px;
-        border-radius: 4px;
-        transition: background 0.3s, transform 0.3s;
-    }
-
-    nav a:hover {
-        background-color: #00ff99;
-        color: #000;
-        transform: scale(1.05);
-    }
-
-    .section {
-        max-width: 1200px;
-        margin: 40px auto;
-        padding: 0 20px;
-        opacity: 0;
-        animation: fadeInUp 1s forwards;
-    }
-
-    h2 {
-        color: #00ff99;
-        margin-bottom: 20px;
-        font-size: 2em;
-        border-bottom: 2px solid #00ff99;
-        display: inline-block;
-        padding-bottom: 5px;
-    }
-
-    /* Games grid */
-    .games {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 20px;
-    }
-
-    .game-card {
-        background: #1f1f1f;
-        border-radius: 10px;
-        padding: 15px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        transition: transform 0.3s, box-shadow 0.3s;
-    }
-
-    .game-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-    }
-
-    /* Forms & buttons */
-    form {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        max-width: 400px;
-        margin: auto;
-        background: #2c2c2c;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        transition: background 0.3s;
-    }
-
-    input[type=text], input[type=password], input[type=email], input[type=file], button {
-        padding: 12px;
-        border: none;
-        border-radius: 6px;
-        font-size: 1em;
-        outline: none;
-        transition: box-shadow 0.3s;
-    }
-
-    input[type=text], input[type=password], input[type=email] {
-        background-color: #444;
-        color: #fff;
-    }
-
-    input[type=file] {
-        background-color: #444;
-        color: #fff;
-    }
-
-    button {
-        background-color: #00ff99;
-        color: #000;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background 0.3s, transform 0.2s;
-    }
-
-    button:hover {
-        background-color: #00cc88;
-        transform: scale(1.02);
-    }
-
-    /* Upload status */
-    .upload-status {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-top: 10px;
-        font-size: 1.1em;
-        color: #0f0;
-        opacity: 0;
-        transition: opacity 0.5s;
-    }
-
-    .upload-status.show {
-        opacity: 1;
-    }
-
-    /* Admin table */
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-        background-color: #1f1f1f;
-        border-radius: 8px;
-        overflow: hidden;
-    }
-
-    th, td {
-        padding: 12px;
-        border-bottom: 1px solid #333;
-        text-align: left;
-    }
-
-    th {
-        background-color: #333;
-        color: #00ff99;
-        font-size: 1.1em;
-    }
-
-    /* Buttons in table */
-    .table-btn {
-        padding: 6px 12px;
-        margin-right: 5px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-weight: 600;
-        transition: background 0.3s;
-    }
-
-    .edit-btn {
-        background-color: #ffd700;
-    }
-
-    .edit-btn:hover {
-        background-color: #e6c200;
-    }
-
-    .delete-btn {
-        background-color: #ff4d4d;
-    }
-
-    .delete-btn:hover {
-        background-color: #cc0000;
-    }
-
-    /* Animations */
-    @keyframes fadeIn {
-        from {opacity: 0; transform: translateY(-20px);}
-        to {opacity: 1; transform: translateY(0);}
-    }
-
-    @keyframes fadeInUp {
-        from {opacity: 0; transform: translateY(30px);}
-        to {opacity: 1; transform: translateY(0);}
-    }
-
+/* Style je formulier hier */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    padding: 50px;
+}
+form {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 300px;
+    margin: auto;
+}
+input[type=text], input[type=password] {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #00cc88;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+button:hover {
+    background-color: #009d6b;
+}
 </style>
 </head>
 <body>
 
-<header>
-    Freddo Games
-</header>
+<h2>Registreren</h2>
+<form id="registerForm">
+    <input type="text" id="regUsername" placeholder="Gebruikersnaam" required />
+    <input type="password" id="regPassword" placeholder="Wachtwoord" required />
+    <button type="submit">Registreren</button>
+</form>
 
-<nav>
-    <a href="#home">Home</a>
-    <a href="#games-section">Games</a>
-    <a href="#login-section">Inloggen</a>
-    <a href="#register-section">Registreren</a>
-    <a href="#admin-section">Admin Panel</a>
-</nav>
+<h2>Inloggen</h2>
+<form id="loginForm">
+    <input type="text" id="loginUsername" placeholder="Gebruikersnaam" required />
+    <input type="password" id="loginPassword" placeholder="Wachtwoord" required />
+    <button type="submit">Inloggen</button>
+</form>
 
-<!-- Home -->
-<div class="section" id="home">
-    <h2>Welkom bij Freddo Games</h2>
-    <p>De allerleukste games, nu ook met een krachtig beheer!</p>
-</div>
-
-<!-- Games Display -->
-<div class="section" id="games-section">
-    <h2>Games</h2>
-    <div class="games" id="games-list">
-        <!-- Dynamisch gevuld -->
-    </div>
-</div>
-
-<!-- Inloggen -->
-<div class="section" id="login-section">
-    <h2>Inloggen</h2>
-    <form id="login-form">
-        <input type="password" placeholder="Wachtwoord" id="login-password" required />
-        <button type="submit">Inloggen</button>
-    </form>
-</div>
-
-<!-- Registreren -->
-<div class="section" id="register-section">
-    <h2>Registreren</h2>
-    <form id="register-form">
-        <input type="text" placeholder="Naam" id="reg-naam" required />
-        <input type="email" placeholder="E-mail" id="reg-email" required />
-        <input type="password" placeholder="Wachtwoord" id="reg-wachtwoord" required />
-        <button type="submit">Registreren</button>
-    </form>
-</div>
-
-<!-- Admin Panel -->
-<div class="section" id="admin-section" style="display:none;">
-    <h2>Admin Panel</h2>
-    <form id="upload-form">
-        <input type="file" id="file-upload" accept=".png,.jpg,.jpeg,.mp4,.zip" required />
-        <button type="submit">Upload File</button>
-        <div class="upload-status" id="upload-status">Upload klaar!</div>
-    </form>
-    <h3>Games Beheer</h3>
-    <form id="add-game-form">
-        <input type="text" id="game-title" placeholder="Titel game" required />
-        <input type="text" id="game-desc" placeholder="Beschrijving" required />
-        <button type="submit">Toevoegen</button>
-    </form>
-    <table>
-        <thead>
-            <tr>
-                <th>Titel</th>
-                <th>Beschrijving</th>
-                <th>Acties</th>
-            </tr>
-        </thead>
-        <tbody id="games-table-body">
-            <!-- Games worden hier toegevoegd -->
-        </tbody>
-    </table>
-</div>
-
-<!-- Scripts -->
 <script>
-    // Simulatie van gebruikersauthenticatie
-    const adminPassword = "https100"; // Wachtwoord voor admin login
-
-    // Inlog functie
-    document.getElementById('login-form').addEventListener('submit', function(e){
+    // Registratie
+    document.getElementById('registerForm').addEventListener('submit', function(e){
         e.preventDefault();
-        const pw = document.getElementById('login-password').value;
-        if(pw === adminPassword){
-            alert('Ingelogd als admin!');
-            document.getElementById('admin-section').style.display = 'block';
-        } else {
-            alert('Onjuist wachtwoord!');
-        }
+        const username = document.getElementById('regUsername').value;
+        const password = document.getElementById('regPassword').value;
+
+        fetch('register.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({username, password})
+        })
+        .then(res => res.text())
+        .then(data => alert(data))
+        .catch(err => alert('Fout: ' + err));
     });
 
-    // Registratie (hier kan je het verder uitbreiden)
-    document.getElementById('register-form').addEventListener('submit', function(e){
+    // Inloggen
+    document.getElementById('loginForm').addEventListener('submit', function(e){
         e.preventDefault();
-        alert('Registratie succesvol! Je kunt nu inloggen.');
-        document.getElementById('register-form').reset();
-    });
+        const username = document.getElementById('loginUsername').value;
+        const password = document.getElementById('loginPassword').value;
 
-    // Placeholder games data
-    let gamesData = [];
-
-    // Voeg game toe
-    document.getElementById('add-game-form').addEventListener('submit', function(e){
-        e.preventDefault();
-        const title = document.getElementById('game-title').value;
-        const desc = document.getElementById('game-desc').value;
-        const game = {id: Date.now(), title, desc};
-        gamesData.push(game);
-        renderGames();
-        document.getElementById('add-game-form').reset();
-    });
-
-    // Render games list
-    function renderGames(){
-        const tbody = document.getElementById('games-table-body');
-        tbody.innerHTML = '';
-        gamesData.forEach(g => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${g.title}</td>
-                <td>${g.desc}</td>
-                <td>
-                    <button class="table-btn edit-btn" onclick="editGame(${g.id})">Bewerk</button>
-                    <button class="table-btn delete-btn" onclick="deleteGame(${g.id})">Verwijder</button>
-                </td>
-            `;
-            tbody.appendChild(tr);
-        });
-    }
-
-    function deleteGame(id){
-        gamesData = gamesData.filter(g => g.id !== id);
-        renderGames();
-    }
-
-    function editGame(id){
-        const game = gamesData.find(g => g.id === id);
-        if(!game) return;
-        const newTitle = prompt('Nieuwe titel:', game.title);
-        const newDesc = prompt('Nieuwe beschrijving:', game.desc);
-        if(newTitle !== null && newDesc !== null){
-            game.title = newTitle;
-            game.desc = newDesc;
-            renderGames();
-        }
-    }
-
-    // Upload bestand (simulatie)
-    document.getElementById('upload-form').addEventListener('submit', function(e){
-        e.preventDefault();
-        const uploadStatus = document.getElementById('upload-status');
-        uploadStatus.classList.remove('show');
-        // Simuleer upload tijd
-        setTimeout(() => {
-            uploadStatus.classList.add('show');
-            uploadStatus.innerText = 'Upload voltooid!';
-            setTimeout(() => {
-                uploadStatus.classList.remove('show');
-            }, 3000);
-        }, 1000);
+        fetch('login.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({username, password})
+        })
+        .then(res => res.text())
+        .then(data => alert(data))
+        .catch(err => alert('Fout: ' + err));
     });
 </script>
 
