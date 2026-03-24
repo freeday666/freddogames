@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Freddo Games - Admin Panel</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+    body {
+        margin: 0;
+        font-family: 'Montserrat', sans-serif;
+        background: #121212;
+        color: #fff;
+        padding: 20px;
+    }
+    h1 {
+        text-align: center;
+        color: #00ff99;
+        margin-bottom: 20px;
+    }
+    /* Form styling */
+    form {
+        background-color: #1f1f1f;
+        padding: 20px;
+        border-radius: 10px;
+        max-width: 600px;
+        margin: 0 auto 40px auto;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    input[type=text], textarea {
+        width: 100%;
+        padding: 12px;
+        margin: 8px 0;
+        border-radius: 6px;
+        border: none;
+        background-color: #444;
+        color: #fff;
+        font-size: 1em;
+        outline: none;
+    }
+    button {
+        padding: 12px 20px;
+        margin-top: 10px;
+        background-color: #00ff99;
+        color: #000;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 1em;
+        transition: background 0.3s, transform 0.2s;
+    }
+    button:hover {
+        background-color: #00cc88;
+        transform: scale(1.02);
+    }
+    /* Games table styling */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background-color: #1f1f1f;
+        border-radius: 10px;
+        overflow: hidden;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    th, td {
+        padding: 12px;
+        border-bottom: 1px solid #333;
+        text-align: left;
+    }
+    th {
+        background-color: #333;
+        color: #00ff99;
+        font-size: 1.1em;
+    }
+    /* Action buttons */
+    .action-btn {
+        padding: 6px 12px;
+        margin-right: 5px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background 0.3s;
+    }
+    .edit-btn {
+        background-color: #ffd700;
+    }
+    .edit-btn:hover {
+        background-color: #e6c200;
+    }
+    .delete-btn {
+        background-color: #ff4d4d;
+    }
+    .delete-btn:hover {
+        background-color: #cc0000;
+    }
+    /* Animaties */
+    @keyframes fadeIn {
+        from {opacity: 0; transform: translateY(-20px);}
+        to {opacity: 1; transform: translateY(0);}
+    }
+</style>
+</head>
+<body>
+
+<h1>Freddo Games - Admin Panel</h1>
+
+<!-- Form voor games toevoegen -->
+<form id="game-form">
+    <h2>Nieuwe Game Toevoegen</h2>
+    <input type="text" id="game-title" placeholder="Titel van de game" required />
+    <textarea id="game-desc" placeholder="Beschrijving van de game" required></textarea>
+    <button type="submit">Toevoegen</button>
+</form>
+
+<!-- Tabel met games -->
+<table>
+    <thead>
+        <tr>
+            <th>Titel</th>
+            <th>Beschrijving</th>
+            <th>Acties</th>
+        </tr>
+    </thead>
+    <tbody id="games-tbody">
+        <!-- Hier komen de games -->
+    </tbody>
+</table>
+
+<script>
+    // Array om games in te bewaren
+    let games = [];
+
+    // Functie om games te renderen
+    function renderGames() {
+        const tbody = document.getElementById('games-tbody');
+        tbody.innerHTML = '';
+        games.forEach(game => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${game.title}</td>
+                <td>${game.desc}</td>
+                <td>
+                    <button class="action-btn edit-btn" onclick="editGame('${game.id}')">Bewerk</button>
+                    <button class="action-btn delete-btn" onclick="deleteGame('${game.id}')">Verwijder</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    // Toevoegen van nieuwe game
+    document.getElementById('game-form').addEventListener('submit', function(e){
+        e.preventDefault();
+        const title = document.getElementById('game-title').value;
+        const desc = document.getElementById('game-desc').value;
+        const newGame = {
+            id: Date.now().toString(),
+            title,
+            desc
+        };
+        games.push(newGame);
+        renderGames();
+        document.getElementById('game-form').reset();
+    });
+
+    // Verwijderen van game
+    function deleteGame(id) {
+        games = games.filter(g => g.id !== id);
+        renderGames();
+    }
+
+    // Bewerken van game
+    function editGame(id) {
+        const game = games.find(g => g.id === id);
+        if (!game) return;
+        const newTitle = prompt('Nieuwe titel:', game.title);
+        const newDesc = prompt('Nieuwe beschrijving:', game.desc);
+        if (newTitle !== null && newDesc !== null) {
+            game.title = newTitle;
+            game.desc = newDesc;
+            renderGames();
+        }
+    }
+
+    // Initialiseer
+    renderGames();
+</script>
+
+</body>
+</html>
