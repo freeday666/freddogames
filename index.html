@@ -3,160 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Freddo Games | Speel de vetste games!</title>
-    <style>
-        /* --- STYLING & ANIMATIES --- */
-        :root {
-            --primary: #00f9ff;
-            --bg: #0a0a12;
-            --card-bg: #161625;
-            --text: #ffffff;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
-        }
-
-        header {
-            padding: 2rem;
-            text-align: center;
-            background: linear-gradient(180deg, #161625 0%, #0a0a12 100%);
-        }
-
-        h1 { font-size: 3rem; color: var(--primary); text-transform: uppercase; letter-spacing: 5px; }
-
-        /* Grid voor de games */
-        .game-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-            padding: 20px;
-            max-width: 1200px;
-            margin: auto;
-        }
-
-        .game-card {
-            background: var(--card-bg);
-            border-radius: 15px;
-            padding: 15px;
-            transition: 0.4s;
-            cursor: pointer;
-            border: 2px solid transparent;
-            text-align: center;
-        }
-
-        .game-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--primary);
-            box-shadow: 0 0 20px rgba(0, 249, 255, 0.3);
-        }
-
-        .game-card img { width: 100%; border-radius: 10px; }
-
-        /* Modal voor de game */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .modal-content {
-            width: 90%; height: 80%;
-            background: #000;
-            border: 2px solid var(--primary);
-            position: relative;
-        }
-
-        iframe { width: 100%; height: 100%; border: none; }
-
-        .close {
-            position: absolute; top: -40px; right: 0;
-            color: white; font-size: 30px; cursor: pointer;
-        }
-    </style>
+    <title>Freddo Games - Game Server Hosting</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
-    <header>
-        <h1>FREDDO GAMES</h1>
-        <p>Kies je spel en begin met spelen!</p>
-    </header>
-
-    <div class="game-grid" id="grid">
-        <!-- Games worden hier via Javascript ingeladen -->
-    </div>
-
-    <div class="modal" id="modal">
-        <span class="close" onclick="closeGame()">&times; Sluiten</span>
-        <div class="modal-content" id="modal-content"></div>
-    </div>
-
-    <script>
-        // Lijst met 30 games (CrazyGames embed links)
-        const games = [
-            { name: "Subway Surfers", url: "https://www.crazygames.com/embed/subway-surfers" },
-            { name: "Slope", url: "https://www.crazygames.com/embed/slope" },
-            { name: "Minecraft Classic", url: "https://www.crazygames.com/embed/minecraft-classic" },
-            { name: "Moto X3M", url: "https://www.crazygames.com/embed/moto-x3m" },
-            { name: "Basketball Stars", url: "https://www.crazygames.com/embed/basketball-stars" },
-            { name: "Temple Run 2", url: "https://www.crazygames.com/embed/temple-run-2" },
-            { name: "Drift Hunters", url: "https://www.crazygames.com/embed/drift-hunters" },
-            { name: "Shell Shockers", url: "https://www.crazygames.com/embed/shell-shockers" },
-            { name: "Fireboy and Watergirl", url: "https://www.crazygames.com/embed/fireboy-and-watergirl-1-forest-temple" },
-            { name: "Rocket Soccer Derby", url: "https://www.crazygames.com/embed/rocket-soccer-derby" },
-            { name: "Paper.io 2", url: "https://www.crazygames.com/embed/paper-io-2" },
-            { name: "Among Us", url: "https://www.crazygames.com/embed/among-us-online" },
-            { name: "Soccer Random", url: "https://www.crazygames.com/embed/soccer-random" },
-            { name: "Stickman Hook", url: "https://www.crazygames.com/embed/stickman-hook" },
-            { name: "Venge.io", url: "https://www.crazygames.com/embed/venge-io" },
-            { name: "Bullet Force", url: "https://www.crazygames.com/embed/bullet-force-multiplayer" },
-            { name: "Pixel Warfare", url: "https://www.crazygames.com/embed/pixel-warfare" },
-            { name: "8 Ball Pool", url: "https://www.crazygames.com/embed/8-ball-pool" },
-            { name: "Happy Wheels", url: "https://www.crazygames.com/embed/happy-wheels" },
-            { name: "Run 3", url: "https://www.crazygames.com/embed/run-3" },
-            { name: "Getaway Shootout", url: "https://www.crazygames.com/embed/getaway-shootout" },
-            { name: "Bad Ice Cream", url: "https://www.crazygames.com/embed/bad-ice-cream" },
-            { name: "Geometry Dash", url: "https://www.crazygames.com/embed/geometry-dash-online" },
-            { name: "Duck Life", url: "https://www.crazygames.com/embed/duck-life" },
-            { name: "Crossy Road", url: "https://www.crazygames.com/embed/crossy-road" },
-            { name: "Helix Jump", url: "https://www.crazygames.com/embed/helix-jump" },
-            { name: "Tank Trouble", url: "https://www.crazygames.com/embed/tank-trouble" },
-            { name: "Raft Wars", url: "https://www.crazygames.com/embed/raft-wars" },
-            { name: "Combat Online", url: "https://www.crazygames.com/embed/combat-online" },
-            { name: "Parkour GO", url: "https://www.crazygames.com/embed/parkour-go" }
-        ];
-
-        const grid = document.getElementById('grid');
-        const modal = document.getElementById('modal');
-        const content = document.getElementById('modal-content');
-
-        // Games genereren
-        games.forEach(game => {
-            const card = document.createElement('div');
-            card.className = 'game-card';
-            card.innerHTML = `<h3>${game.name}</h3><p>Klik om te spelen</p>`;
-            card.onclick = () => openGame(game.url);
-            grid.appendChild(card);
-        });
-
-        function openGame(url) {
-            content.innerHTML = `<iframe src="${url}" allowfullscreen></iframe>`;
-            modal.style.display = 'flex';
-        }
-
-        function closeGame() {
-            modal.style.display = 'none';
-            content.innerHTML = '';
-        }
-    </script>
+<header>
+    <h1>Freddo Games</h1>
+    <p>Professionele game server hosting service</p>
+</header>
+<nav>
+    <ul>
+        <li><a href="#diensten">Diensten</a></li>
+        <li><a href="#over-ons">Over ons</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ul>
+</nav>
+<main>
+    <section id="diensten">
+        <h2>Onze Diensten</h2>
+        <p>Bij Freddo Games bieden we betrouwbare en krachtige game servers voor verschillende spellen, waaronder:</p>
+        <ul>
+            <li>Minecraft</li>
+            <li>Counter-Strike: Global Offensive</li>
+            <li>ARK: Survival Evolved</li>
+            <li>Rust</li>
+            <li>Valheim</li>
+        </ul>
+        <p>Onze servers zijn snel, veilig en gemakkelijk op te zetten, zodat je je kunt richten op het spelen!</p>
+    </section>
+    <section id="over-ons">
+        <h2>Over ons</h2>
+        <p>Freddo Games is opgericht door een team van gaming liefhebbers met jarenlange ervaring in server hosting en game ontwikkeling. Onze missie is om gamers de beste game-ervaring te bieden met hoogwaardige server oplossingen.</p>
+    </section>
+    <section id="contact">
+        <h2>Neem Contact Op</h2>
+        <form action="contact_submit.php" method="post">
+            <label for="naam">Naam:</label>
+            <input type="text" id="naam" name="naam" required>
+            <label for="email">E-mail:</label>
+            <input type="email" id="email" name="email" required>
+            <label for="bericht">Bericht:</label>
+            <textarea id="bericht" name="bericht" required></textarea>
+            <button type="submit">Verzend</button>
+        </form>
+    </section>
+</main>
+<footer>
+    <p>&copy; 2023 Freddo Games. Alle rechten voorbehouden.</p>
+</footer>
 </body>
 </html>
