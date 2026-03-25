@@ -1,55 +1,77 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Freddo Games - Game Server Hosting</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Arcade- en Pac-Man-achtige Games Overzicht</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        ul {
+            list-style-type: square;
+            padding-left: 20px;
+        }
+        .section {
+            background-color: #fff;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+    </style>
 </head>
 <body>
-<header>
-    <h1>Freddo Games</h1>
-    <p>Professionele game server hosting service</p>
-</header>
-<nav>
+
+<h1>Overzicht van Arcade- en Pac-Man-achtige Games</h1>
+
+<div class="section">
+    <h2>Pac-Man-achtige games</h2>
     <ul>
-        <li><a href="#diensten">Diensten</a></li>
-        <li><a href="#over-ons">Over ons</a></li>
-        <li><a href="#contact">Contact</a></li>
+        <li>Pac-Man</li>
+        <li>Ms. Pac-Man</li>
+        <li>Jungle Hunt</li>
+        <li>Lady Bug</li>
     </ul>
-</nav>
-<main>
-    <section id="diensten">
-        <h2>Onze Diensten</h2>
-        <p>Bij Freddo Games bieden we betrouwbare en krachtige game servers voor verschillende spellen, waaronder:</p>
-        <ul>
-            <li>Minecraft</li>
-            <li>Counter-Strike: Global Offensive</li>
-            <li>ARK: Survival Evolved</li>
-            <li>Rust</li>
-            <li>Valheim</li>
-        </ul>
-        <p>Onze servers zijn snel, veilig en gemakkelijk op te zetten, zodat je je kunt richten op het spelen!</p>
-    </section>
-    <section id="over-ons">
-        <h2>Over ons</h2>
-        <p>Freddo Games is opgericht door een team van gaming liefhebbers met jarenlange ervaring in server hosting en game ontwikkeling. Onze missie is om gamers de beste game-ervaring te bieden met hoogwaardige server oplossingen.</p>
-    </section>
-    <section id="contact">
-        <h2>Neem Contact Op</h2>
-        <form action="contact_submit.php" method="post">
-            <label for="naam">Naam:</label>
-            <input type="text" id="naam" name="naam" required>
-            <label for="email">E-mail:</label>
-            <input type="email" id="email" name="email" required>
-            <label for="bericht">Bericht:</label>
-            <textarea id="bericht" name="bericht" required></textarea>
-            <button type="submit">Verzend</button>
-        </form>
-    </section>
-</main>
-<footer>
-    <p>&copy; 2023 Freddo Games. Alle rechten voorbehouden.</p>
-</footer>
+</div>
+
+<div class="section">
+    <h2>Puzzelspellen</h2>
+    <ul>
+        <li>Tetris</li>
+        <li>Puzzle Bobble / Bust-a-Move</li>
+        <li>Lemmings</li>
+        <li>Dr. Mario</li>
+        <li>Columns</li>
+    </ul>
+</div>
+
+<div class="section">
+    <h2>Actie- en platformgames</h2>
+    <ul>
+        <li>Donkey Kong</li>
+        <li>Galaga</li>
+        <li>Frogger</li>
+        <li>Centipede</li>
+    </ul>
+</div>
+
+<div class="section">
+    <h2>Andere klassieke arcade games</h2>
+    <ul>
+        <li>Arkanoid</li>
+        <li>Street Fighter II</li>
+        <li>Space Invaders</li>
+        <li>Pole Position</li>
+        <li>Dig Dug</li>
+    </ul>
+</div>
+
 </body>
 </html>
