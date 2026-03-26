@@ -1,255 +1,162 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Modern Penalty Kick Game</title>
-<!-- Google Fonts voor een modern lettertype -->
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
-<style>
-  /* Reset en basis */
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Freddo Games | Speel de vetste games!</title>
+    <style>
+        /* --- STYLING & ANIMATIES --- */
+        :root {
+            --primary: #00f9ff;
+            --bg: #0a0a12;
+            --card-bg: #161625;
+            --text: #ffffff;
+        }
 
-  body {
-    font-family: 'Roboto', sans-serif;
-    background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    padding: 20px;
-    color: #fff;
-  }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
 
-  /* Header */
-  header {
-    text-align: center;
-    margin-bottom: 20px;
-  }
+        header {
+            padding: 2rem;
+            text-align: center;
+            background: linear-gradient(180deg, #161625 0%, #0a0a12 100%);
+        }
 
-  header h1 {
-    font-size: 2.5em;
-    margin-bottom: 10px;
-  }
+        h1 { font-size: 3rem; color: var(--primary); text-transform: uppercase; letter-spacing: 5px; }
 
-  /* Score */
-  #score-container {
-    font-size: 1.5em;
-    background: rgba(255,255,255,0.2);
-    padding: 10px 20px;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    margin-bottom: 30px;
-    transition: background 0.3s;
-  }
+        /* Grid voor de games */
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: auto;
+        }
 
-  /* Game sectie */
-  section#game {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+        .game-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 15px;
+            transition: 0.4s;
+            cursor: pointer;
+            border: 2px solid transparent;
+            text-align: center;
+        }
 
-  /* Speelveld */
-  #field {
-    position: relative;
-    width: 100%;
-    max-width: 500px;
-    height: 600px;
-    background: linear-gradient(to top, #3b873e, #4CAF50);
-    border-radius: 20px;
-    box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
-    overflow: hidden;
-    margin-bottom: 30px;
-  }
+        .game-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(0, 249, 255, 0.3);
+        }
 
-  /* Doel */
-  #goal {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 200px;
-    height: 30px;
-    background: #fff;
-    border-radius: 15px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    border: 3px solid #333;
-  }
+        .game-card img { width: 100%; border-radius: 10px; }
 
-  /* Bal */
-  #ball {
-    position: absolute;
-    width: 40px;
-    height: 40px;
-    background-color: #222;
-    border-radius: 50%;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    transition: all 0.5s ease;
-  }
+        /* Modal voor de game */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
 
-  /* Doelwit */
-  #target {
-    position: absolute;
-    top: 120px;
-    width: 60px;
-    height: 60px;
-    background-color: #e33;
-    border-radius: 50%;
-    border: 3px solid #fff;
-    cursor: pointer;
-    left: calc(50% - 30px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    transition: transform 0.3s, box-shadow 0.3s;
-  }
+        .modal-content {
+            width: 90%; height: 80%;
+            background: #000;
+            border: 2px solid var(--primary);
+            position: relative;
+        }
 
-  #target:hover {
-    transform: scale(1.1);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-  }
+        iframe { width: 100%; height: 100%; border: none; }
 
-  /* Knoppen en tekst */
-  #controls {
-    display: flex;
-    gap: 15px;
-  }
-
-  button {
-    padding: 12px 25px;
-    font-size: 1em;
-    font-weight: 700;
-    border: none;
-    border-radius: 10px;
-    background: #fff;
-    color: #333;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    transition: background 0.3s, transform 0.2s;
-  }
-
-  button:hover {
-    background: #ddd;
-    transform: translateY(-2px);
-  }
-
-  /* Animatie voor de bal */
-  @keyframes shoot {
-    from { transform: translateX(0) translateY(0); }
-    to { transform: translateX(var(--target-x)) translateY(-600px); }
-  }
-
-</style>
+        .close {
+            position: absolute; top: -40px; right: 0;
+            color: white; font-size: 30px; cursor: pointer;
+        }
+    </style>
 </head>
 <body>
 
-<header>
-  <h1>Modern Penalty Kick Game</h1>
-</header>
+    <header>
+        <h1>FREDDO GAMES</h1>
+        <p>Kies je spel en begin met spelen!</p>
+    </header>
 
-<div id="score-container">
-  Score: <span id="score">0</span>
-</div>
+    <div class="game-grid" id="grid">
+        <!-- Games worden hier via Javascript ingeladen -->
+    </div>
 
-<section id="game">
-  <div id="field">
-    <div id="goal"></div>
-    <div id="ball"></div>
-    <div id="target"></div>
-  </div>
-  <div id="controls">
-    <button id="shootBtn">Schiet!</button>
-    <button id="resetBtn">Reset Score</button>
-  </div>
-</section>
+    <div class="modal" id="modal">
+        <span class="close" onclick="closeGame()">&times; Sluiten</span>
+        <div class="modal-content" id="modal-content"></div>
+    </div>
 
-<script>
-  // Elementen
-  const ball = document.getElementById('ball');
-  const target = document.getElementById('target');
-  const scoreSpan = document.getElementById('score');
-  const shootBtn = document.getElementById('shootBtn');
-  const resetBtn = document.getElementById('resetBtn');
+    <script>
+        // Lijst met 30 games (CrazyGames embed links)
+        const games = [
+            { name: "Subway Surfers", url: "https://www.crazygames.com/embed/subway-surfers" },
+            { name: "Slope", url: "https://www.crazygames.com/embed/slope" },
+            { name: "Minecraft Classic", url: "https://www.crazygames.com/embed/minecraft-classic" },
+            { name: "Moto X3M", url: "https://www.crazygames.com/embed/moto-x3m" },
+            { name: "Basketball Stars", url: "https://www.crazygames.com/embed/basketball-stars" },
+            { name: "Temple Run 2", url: "https://www.crazygames.com/embed/temple-run-2" },
+            { name: "Drift Hunters", url: "https://www.crazygames.com/embed/drift-hunters" },
+            { name: "Shell Shockers", url: "https://www.crazygames.com/embed/shell-shockers" },
+            { name: "Fireboy and Watergirl", url: "https://www.crazygames.com/embed/fireboy-and-watergirl-1-forest-temple" },
+            { name: "Rocket Soccer Derby", url: "https://www.crazygames.com/embed/rocket-soccer-derby" },
+            { name: "Paper.io 2", url: "https://www.crazygames.com/embed/paper-io-2" },
+            { name: "Among Us", url: "https://www.crazygames.com/embed/among-us-online" },
+            { name: "Soccer Random", url: "https://www.crazygames.com/embed/soccer-random" },
+            { name: "Stickman Hook", url: "https://www.crazygames.com/embed/stickman-hook" },
+            { name: "Venge.io", url: "https://www.crazygames.com/embed/venge-io" },
+            { name: "Bullet Force", url: "https://www.crazygames.com/embed/bullet-force-multiplayer" },
+            { name: "Pixel Warfare", url: "https://www.crazygames.com/embed/pixel-warfare" },
+            { name: "8 Ball Pool", url: "https://www.crazygames.com/embed/8-ball-pool" },
+            { name: "Happy Wheels", url: "https://www.crazygames.com/embed/happy-wheels" },
+            { name: "Run 3", url: "https://www.crazygames.com/embed/run-3" },
+            { name: "Getaway Shootout", url: "https://www.crazygames.com/embed/getaway-shootout" },
+            { name: "Bad Ice Cream", url: "https://www.crazygames.com/embed/bad-ice-cream" },
+            { name: "Geometry Dash", url: "https://www.crazygames.com/embed/geometry-dash-online" },
+            { name: "Duck Life", url: "https://www.crazygames.com/embed/duck-life" },
+            { name: "Crossy Road", url: "https://www.crazygames.com/embed/crossy-road" },
+            { name: "Helix Jump", url: "https://www.crazygames.com/embed/helix-jump" },
+            { name: "Tank Trouble", url: "https://www.crazygames.com/embed/tank-trouble" },
+            { name: "Raft Wars", url: "https://www.crazygames.com/embed/raft-wars" },
+            { name: "Combat Online", url: "https://www.crazygames.com/embed/combat-online" },
+            { name: "Parkour GO", url: "https://www.crazygames.com/embed/parkour-go" }
+        ];
 
-  let score = 0;
-  let isShooting = false;
+        const grid = document.getElementById('grid');
+        const modal = document.getElementById('modal');
+        const content = document.getElementById('modal-content');
 
-  // Functie om score te updaten
-  function updateScore() {
-    scoreSpan.textContent = score;
-  }
+        // Games genereren
+        games.forEach(game => {
+            const card = document.createElement('div');
+            card.className = 'game-card';
+            card.innerHTML = `<h3>${game.name}</h3><p>Klik om te spelen</p>`;
+            card.onclick = () => openGame(game.url);
+            grid.appendChild(card);
+        });
 
-  // Reset score
-  resetBtn.onclick = () => {
-    score = 0;
-    updateScore();
-    alert('Score gereset!');
-  };
+        function openGame(url) {
+            content.innerHTML = `<iframe src="${url}" allowfullscreen></iframe>`;
+            modal.style.display = 'flex';
+        }
 
-  // Functie om te schieten
-  function shoot() {
-    if (isShooting) return; // voorkomen dubbele schoten
-
-    isShooting = true;
-
-    // Bepaal willekeurig doelwit x positie
-    const maxX = document.getElementById('field').clientWidth - ball.offsetWidth;
-    const targetX = Math.random() * maxX;
-    target.style.left = `${targetX + 30}px`; // met marge voor doelwit
-
-    // Bereken verschuiving voor animatie
-    const deltaX = targetX + 20 - (document.getElementById('field').clientWidth/2 - 20);
-    // zet CSS variabele voor animatie
-    ball.style.setProperty('--target-x', `${deltaX}px`);
-
-    // Start animatie
-    ball.style.animation = 'none'; // reset
-    void ball.offsetWidth; // force reflow
-    ball.style.animation = 'shoot 1s forwards';
-
-    // Na de animatie, check of goal
-    setTimeout(() => {
-      checkGoal(targetX);
-      // Reset bal positie
-      ball.style.transform = '';
-      ball.style.left = '50%';
-      ball.style.bottom = '20px';
-      ball.style.animation = '';
-      isShooting = false;
-    }, 1000);
-  }
-
-  // Check of de bal in de goal ligt
-  function checkGoal(targetX) {
-    const goalX = document.getElementById('goal').offsetLeft;
-    const goalWidth = document.getElementById('goal').offsetWidth;
-
-    // Bal in doel?
-    if (
-      targetX + 20 > goalX &&
-      targetX + 20 + 60 < goalX + goalWidth
-    ) {
-      alert('🎉 GOAL! 🎉');
-      score++;
-      updateScore();
-    } else {
-      alert('Helaas, mis!');
-    }
-  }
-
-  // Event listeners
-document.getElementById('shootBtn').onclick = shoot;
-
-// Optioneel: klik op doelwit om te schieten
-// target.onclick = shoot;
-</script>
-
+        function closeGame() {
+            modal.style.display = 'none';
+            content.innerHTML = '';
+        }
+    </script>
 </body>
 </html>
