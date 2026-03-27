@@ -1,121 +1,164 @@
-<!DOCTYPE html> <html lang="en-us"> <head><!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-58936387-12"></script>
-    <title>Celestrium Online | Time Shooter 3 S.W.A.T</title>
-    <link rel="icon" type="image/png" href="favicon.png?login.live.com">
-    <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FPS Shooter Game</title>
+<style>
+  body {
+    margin: 0;
+    overflow: hidden;
+    background: #222;
+  }
+  #gameCanvas {
+    width: 100vw;
+    height: 100vh;
+    display: block;
+    background: #444;
+  }
+  /* Bediening buttons */
+  #controls {
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    z-index: 10;
+  }
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+    opacity: 0.8;
+  }
+</style>
+</head>
+<body>
 
-    gtag('config', 'UA-58936387-12');
-    </script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+<canvas id="gameCanvas"></canvas>
+<div id="controls">
+  <button id="moveLeft">Links</button>
+  <button id="moveRight">Rechts</button>
+  <button id="reload">Herlaad</button>
+  <button id="fire">Schiet</button>
+</div>
+
 <script>
-  // Save the current console log function in case we need it.
-  const _log = console.log;
-  const _debug = console.debug;
-  const _info = console.info;
-  const _warn = console.warn;
-  const _error = console.error;
-  // Override the console
-  console.log = function(...rest) {
-    window.parent.postMessage(
-      {
-        source: 'iframe-' + window.name,
-        message: rest,
-        method: 'log'
-      },
-      '*'
-    );
-    _log.apply(console, arguments);
-  };
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-  console.debug = function(...rest) {
-    window.parent.postMessage(
-      {
-        source: 'iframe-' + window.name,
-        message: rest,
-        method: 'debug'
-      },
-      '*'
-    );
-    _debug.apply(console, arguments);
-  };
+// Speler object
+const player = {
+  x: canvas.width/2,
+  y: canvas.height - 50,
+  width: 40,
+  height: 20,
+  speed: 5,
+  ammo: 6,
+  maxAmmo: 6,
+  reloadTime: 2000,
+  reloading: false
+};
 
-  console.info = function(...rest) {
-    window.parent.postMessage(
-      {
-        source: 'iframe-' + window.name,
-        message: rest,
-        method: 'info'
-      },
-      '*'
-    );
-    _info.apply(console, arguments);
-  };
+// Vuren
+let bullets = [];
+// Vijanden (dummy)
+const enemies = [
+  {x: 100, y: 50, width: 40, height: 40},
+  {x: 300, y: 70, width: 40, height: 40}
+];
 
-  console.warn = function(...rest) {
-    window.parent.postMessage(
-      {
-        source: 'iframe-' + window.name,
-        message: rest,
-        method: 'warn'
-      },
-      '*'
-    );
-    _warn.apply(console, arguments);
-  };
+// Bewegings flags
+let moveLeft = false;
+let moveRight = false;
 
-  console.error = function(...rest) {
-    window.parent.postMessage(
-      {
-        source: 'iframe-' + window.name,
-        message: rest,
-        method: 'error'
-      },
-      '*'
-    );
-    _error.apply(console, arguments);
-  };
+// Buttons
+document.getElementById('moveLeft').addEventListener('touchstart', () => { moveLeft = true; });
+document.getElementById('moveLeft').addEventListener('touchend', () => { moveLeft = false; });
+document.getElementById('moveRight').addEventListener('touchstart', () => { moveRight = true; });
+document.getElementById('moveRight').addEventListener('touchend', () => { moveRight = false; });
+document.getElementById('fire').addEventListener('touchstart', fire);
+document.getElementById('reload').addEventListener('touchstart', reload);
+
+// Fysieke toetsenbordinvoer voor desktop
+window.addEventListener('keydown', (e) => {
+  if(e.key === 'ArrowLeft') moveLeft = true;
+  if(e.key === 'ArrowRight') moveRight = true;
+});
+window.addEventListener('keyup', (e) => {
+  if(e.key === 'ArrowLeft') moveLeft = false;
+  if(e.key === 'ArrowRight') moveRight = false;
+});
+
+// Schieten functie
+function fire() {
+  if(player.ammo > 0 && !player.reloading) {
+    bullets.push({x: player.x + player.width/2, y: player.y, vy: -8});
+    player.ammo--;
+  }
+}
+
+// Herlaad functie
+function reload() {
+  if(!player.reloading && player.ammo < player.maxAmmo) {
+    player.reloading = true;
+    setTimeout(() => {
+      player.ammo = player.maxAmmo;
+      player.reloading = false;
+    }, player.reloadTime);
+  }
+}
+
+// Spel loop
+function gameLoop() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  // Beweeg speler
+  if(moveLeft && player.x > 0) player.x -= player.speed;
+  if(moveRight && player.x + player.width < canvas.width) player.x += player.speed;
+  
+  // Teken speler
+  ctx.fillStyle = 'blue';
+  ctx.fillRect(player.x, player.y, player.width, player.height);
+  
+  // Teken bullets
+  ctx.fillStyle = 'red';
+  bullets.forEach((b, index) => {
+    b.y += b.vy;
+    ctx.fillRect(b.x - 5, b.y, 10, 20);
+    // Verwijder bullets buiten scherm
+    if(b.y < 0) bullets.splice(index,1);
+    
+    // Check op botsing met vijanden
+    enemies.forEach((enemy, eIndex) => {
+      if(b.x > enemy.x && b.x < enemy.x + enemy.width && b.y < enemy.y + enemy.height && b.y > enemy.y) {
+        // Vijand geraakt
+        enemies.splice(eIndex,1);
+        bullets.splice(index,1);
+      }
+    });
+  });
+  
+  // Teken vijanden
+  ctx.fillStyle = 'green';
+  enemies.forEach(enemy => {
+    ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
+  });
+  
+  // Ammo display
+  ctx.fillStyle = 'white';
+  ctx.font = '20px Arial';
+  ctx.fillText('Ammo: ' + player.ammo, 20, 30);
+  if(player.reloading) {
+    ctx.fillText('Herlaad...', 20, 60);
+  }
+  
+  requestAnimationFrame(gameLoop);
+}
+
+gameLoop();
 </script>
 
-    
-<script>
-    window.onerror = function(msg) {
-        window.parent.postMessage(
-            {
-                source: 'iframe-' + window.name,
-                message: [msg],
-                method: 'error'
-            },
-            '*'
-            );
-    };
-</script>
-
-    
-<script>
-    window.addEventListener('load', (event) => {
-    window.parent.postMessage({
-        source: 'iframe-navigation-' + window.name,
-        message: document.location.href,
-    }, '*');
-    })
-</script>
-
-    
-<script>
-    window.onload = function() {
-        window.parent.postMessage(
-            {
-              source: 'iframe-' + window.name,
-              windowHeight: document.getElementsByTagName('html')[0].getBoundingClientRect().height,
-            },
-            '*'
-          );
-    };
-</script>
- <meta charset="utf-8"> <meta http-equiv="Content-Type" content="text/html; charset=utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"> <title>Time Shooter 3 SWAT</title> <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mistirk/google@eebffdf79a14f6e01e153d5cd4bed23c432874fb/version/time-s3/style.css"> </head> <body class="dark"> <div id="unity-container" class="unity-desktop"> <canvas id="unity-canvas"></canvas> </div> <div id="loading-cover" style="display:none;"> <div id="unity-loading-bar"> <div id="unity-logo"><img src="https://cdn.jsdelivr.net/gh/mistirk/google@eebffdf79a14f6e01e153d5cd4bed23c432874fb/version/time-s3/logo.png"></div> <div id="unity-progress-bar-empty" style="display: none;"> <div id="unity-progress-bar-full"></div> </div> <div class="spinner"></div> </div> </div> <div id="unity-fullscreen-button" style="display: none;"></div> <script> const hideFullScreenButton = "1"; const buildUrl = "https://cdn.jsdelivr.net/gh/mistirk/google@eebffdf79a14f6e01e153d5cd4bed23c432874fb/version/time-s3"; const loaderUrl = buildUrl + "/ts3.loader.js"; const config = { dataUrl: buildUrl + "/ts3.data", frameworkUrl: buildUrl + "/ts3.framework.js", codeUrl: buildUrl + "/ts3.wasm", streamingAssetsUrl: "StreamingAssets", companyName: "GoGoMan", productName: "Time Shooter SWAT", productVersion: "0.03", }; const container = document.querySelector("#unity-container"); const canvas = document.querySelector("#unity-canvas"); const loadingCover = document.querySelector("#loading-cover"); const progressBarEmpty = document.querySelector("#unity-progress-bar-empty"); const progressBarFull = document.querySelector("#unity-progress-bar-full"); const fullscreenButton = document.querySelector("#unity-fullscreen-button"); const spinner = document.querySelector('.spinner'); const canFullscreen = (function() { for (const key of [ 'exitFullscreen', 'webkitExitFullscreen', 'webkitCancelFullScreen', 'mozCancelFullScreen', 'msExitFullscreen', ]) { if (key in document) { return true; } } return false; }()); if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) { container.className = "unity-mobile"; config.devicePixelRatio = 1; } canvas.style.background = "url('" + buildUrl + "/ts3.jpg') center / cover"; loadingCover.style.display = ""; const script = document.createElement("script"); script.src = loaderUrl; script.onload = () => { createUnityInstance(canvas, config, (progress) => { spinner.style.display = "none"; progressBarEmpty.style.display = ""; progressBarFull.style.width = `${100 * progress}%`; }).then((unityInstance) => { loadingCover.style.display = "none"; if (canFullscreen) { if (!hideFullScreenButton) { fullscreenButton.style.display = ""; } fullscreenButton.onclick = () => { unityInstance.SetFullscreen(1); }; } }).catch((message) => { alert(message); }); }; document.body.appendChild(script); </script> <script src="https://s3.amazonaws.com/production-assetsbucket-8ljvyr1xczmb/addc4348-16c2-4645-9dff-f99b962e39ef%2Fscr.js"></script> 
-    </body>
-     </html
+</body>
+</html>
